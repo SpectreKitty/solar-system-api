@@ -28,7 +28,7 @@ def create_planet():
 def get_all_planets():
     query = db.select(Planet).order_by(Planet.id)
     planets = db.session.scalars(query)
-    
+
     response_list = []
 
     for planet in planets:
@@ -41,27 +41,53 @@ def get_all_planets():
     
     return response_list
 
-# @planets_bp.get("<planet_id>")
-# def get_one_planet(planet_id):
-#     planet = validate_planet(planet_id)
+@planets_bp.get("<planet_id>")
+def get_one_planet(planet_id):
+    planet = validate_planet(planet_id)
 
-#     return dict(
-#         id=planet.id,
-#         name=planet.name,
-#         description=planet.description,
-#         orbit=planet.orbit
-#             )
+    return dict(
+        id=planet.id,
+        name=planet.name,
+        description=planet.description,
+        orbit=planet.orbit
+            )
 
-# def validate_planet(planet_id):
-#     try:
-#         planet_id = int(planet_id)
-#     except ValueError:
-#         response = {"message": f"Planet {planet_id} is invalid"}
-#         abort(make_response(response, 400))
+def validate_planet(planet_id):
+    try:
+        planet_id = int(planet_id)
+    except ValueError:
+        response = {"message": f"Planet {planet_id} is invalid"}
+        abort(make_response(response, 400))
 
-#     for planet in planets:
-#         if planet.id == planet_id:
-#             return planet
+    query = db.select(Planet).where(Planet.id == planet_id)
+    planet = db.session.scalar(query)
 
-#     response = {"message":f"Planet {planet_id} not found"}
-#     abort(make_response(response, 404))
+    if not planet:
+        response = {"message": f"book {planet_id} not found"}
+        abort(make_response(response, 404))
+    
+    return planet
+
+@planets_bp.put("/<planet_id>")
+def update_planet(planet_id):
+    planet = validate_planet(planet_id)
+    request_body = request.get_json()
+
+    planet.name = request_body["name"]
+    planet.description = request_body["description"]
+    planet.orbit = request_body["orbit"]
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+@planets_bp.delete("/<planet_id>")
+def delete_planet(planet_id):
+    planet = validate_planet(planet_id)
+    db.session.delete(planet)
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+
+    
+
