@@ -29,7 +29,9 @@ def get_all_planets():
     # query = db.select(Planet).order_by(Planet.id)
     # planets = db.session.scalars(query)
     query = db.select(Planet)
-
+    # name_param = request.args.get("name")
+    # if name_param:
+    #     query = db.select(Planet).where(Planet.name == name_param)
     description_param = request.args.get("description")
     if description_param:
         query = query.where(Planet.description.ilike(f"%{description_param}%"))
@@ -74,7 +76,7 @@ def validate_planet(planet_id):
     planet = db.session.scalar(query)
 
     if not planet:
-        response = {"message": f"book {planet_id} not found"}
+        response = {"message": f"Planet {planet_id} not found"}
         abort(make_response(response, 404))
     
     return planet
