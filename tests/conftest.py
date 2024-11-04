@@ -38,12 +38,13 @@ def two_saved_planets(app):
     mercury_planet = Planet(name="Mercury",
                             description="Speedy hotshot!",
                             orbit="first")
+    
     jupiter_planet = Planet(name="Jupiter",
                             description="Stormy",
                             orbit="fifth")
 
     db.session.add_all([mercury_planet, jupiter_planet])
     # Alternatively, we could do
-    # db.session.add(ocean_book)
-    # db.session.add(mountain_book)
+    # db.session.add(mercury_planet)
+    # db.session.add(jupiter_planet)
     db.session.commit()

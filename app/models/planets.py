@@ -7,6 +7,19 @@ class Planet(db.Model):
         description: Mapped[str]
         orbit: Mapped[str]
 
+        def to_dict(self):
+                planet_as_dict = {}
+                planet_as_dict["id"] = self.id
+                planet_as_dict["name"] = self.name
+                planet_as_dict["description"] = self.description
+                planet_as_dict["orbit"] = self.orbit
+
+                return planet_as_dict
+
+        @classmethod
+        def from_dict(cls, planet_data):
+                return cls(name=planet_data["name"], description=planet_data["description"], orbit=planet_data["orbit"])
+
 # planets = [
 #     Planet(1, "Mercury", "The speedy hotshot!", "first"),
 #     Planet(2, "Venus", "Beautiful but deadly!", "second"),
